@@ -1,0 +1,435 @@
+/* =========================================================================
+   Project Pulse — Dashboard stylesheet
+   Design system: neutral slate surface, indigo accent, semantic status colors.
+   Tokens for spacing (4/8/16/24/32), radius, shadows, and type scale.
+   ========================================================================= */
+
+:root {
+  /* Color — surfaces */
+  --color-bg: #f4f6fb;
+  --color-surface: #ffffff;
+  --color-surface-muted: #f8fafc;
+  --color-border: #e2e8f0;
+  --color-border-strong: #cbd5e1;
+
+  /* Color — text */
+  --color-text: #0f172a;         /* slate-900 */
+  --color-text-muted: #475569;   /* slate-600 — AA on white */
+  --color-text-subtle: #64748b;  /* slate-500 */
+
+  /* Color — brand */
+  --color-accent: #4f46e5;       /* indigo-600 */
+  --color-accent-soft: #eef2ff;
+
+  /* Color — semantic (badge bg / text pairs meet AA on light bg) */
+  --status-active-bg: #dcfce7;      --status-active-fg: #14532d;
+  --status-at-risk-bg: #fef3c7;     --status-at-risk-fg: #78350f;
+  --status-blocked-bg: #fee2e2;     --status-blocked-fg: #7f1d1d;
+  --status-shipped-bg: #dbeafe;     --status-shipped-fg: #1e3a8a;
+  --status-on-hold-bg: #ede9fe;     --status-on-hold-fg: #4c1d95;
+  --status-unknown-bg: #e2e8f0;    --status-unknown-fg: #1f2937;
+
+  /* Priority accents */
+  --priority-high: #dc2626;      /* red-600 */
+  --priority-medium: #d97706;    /* amber-600 */
+  --priority-low: #059669;       /* emerald-600 */
+  --priority-unknown: #64748b;   /* slate-500 */
+
+  /* Spacing scale */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+
+  /* Radius */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-pill: 999px;
+
+  /* Shadow */
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
+  --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.08);
+  --shadow-lg: 0 10px 24px rgba(15, 23, 42, 0.10);
+
+  /* Type */
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    Roboto, "Helvetica Neue", Arial, sans-serif;
+
+  /* Focus */
+  --focus-ring: 0 0 0 3px rgba(79, 70, 229, 0.45);
+}
+
+/* ---------- Base ---------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--color-text);
+  background: var(--color-bg);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3, p {
+  margin: 0;
+}
+
+:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+  border-radius: var(--radius-sm);
+}
+
+/* ---------- Dashboard shell ---------- */
+
+.dashboard {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--space-6) var(--space-5) var(--space-7);
+}
+
+.dashboard__header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-5) var(--space-5);
+  margin-bottom: var(--space-5);
+  background: linear-gradient(135deg, #ffffff 0%, var(--color-accent-soft) 100%);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.dashboard__header h1,
+.dashboard__header .dashboard__title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--color-text);
+}
+
+.dashboard__header p {
+  color: var(--color-text-muted);
+  max-width: 60ch;
+}
+
+/* ---------- Grid ---------- */
+
+.project-grid {
+  display: grid;
+  gap: var(--space-5);
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+/* ---------- Project card ---------- */
+
+.project-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  padding-left: calc(var(--space-5) + 6px); /* room for priority stripe */
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  transition: transform 150ms ease, box-shadow 150ms ease,
+    border-color 150ms ease;
+}
+
+.project-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-border-strong);
+}
+
+/* Priority accent stripe on the left edge (color + shape) */
+.project-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 6px;
+  background: var(--color-border-strong);
+}
+
+.project-card__title {
+  font-size: 1.125rem;
+  font-weight: 650;
+  line-height: 1.3;
+  color: var(--color-text);
+  word-break: break-word;
+}
+
+.project-card__owner {
+  font-size: 0.9375rem;
+  color: var(--color-text-muted);
+}
+
+.project-card__owner::before {
+  content: "👤 ";
+  margin-right: var(--space-1);
+  opacity: 0.75;
+}
+
+.project-card__activity {
+  font-size: 0.875rem;
+  color: var(--color-text-subtle);
+  line-height: 1.5;
+  padding-top: var(--space-3);
+  border-top: 1px dashed var(--color-border);
+  word-break: break-word;
+}
+
+/* Row that groups badges (status + priority) */
+.project-card__meta,
+.project-card > .status-badge + .priority,
+.project-card > .priority + .status-badge {
+  display: inline-flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.project-card__meta {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* ---------- Status badges ---------- */
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 4px 10px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  border-radius: var(--radius-pill);
+  background: var(--status-unknown-bg);
+  color: var(--status-unknown-fg);
+  border: 1px solid rgba(15, 23, 42, 0.06);
+  white-space: nowrap;
+}
+
+.status-badge::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.85;
+}
+
+.status-badge--active {
+  background: var(--status-active-bg);
+  color: var(--status-active-fg);
+}
+.status-badge--at-risk {
+  background: var(--status-at-risk-bg);
+  color: var(--status-at-risk-fg);
+}
+.status-badge--blocked {
+  background: var(--status-blocked-bg);
+  color: var(--status-blocked-fg);
+}
+.status-badge--shipped {
+  background: var(--status-shipped-bg);
+  color: var(--status-shipped-fg);
+}
+.status-badge--on-hold {
+  background: var(--status-on-hold-bg);
+  color: var(--status-on-hold-fg);
+}
+.status-badge--unknown {
+  background: var(--status-unknown-bg);
+  color: var(--status-unknown-fg);
+}
+
+/* ---------- Priority ---------- */
+
+.priority {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 4px 10px 4px 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-muted);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  white-space: nowrap;
+}
+
+/* Shape marker so meaning is not conveyed by color alone */
+.priority::before {
+  content: "";
+  display: inline-block;
+  width: 0;
+  height: 0;
+  margin-right: 2px;
+}
+
+.priority--high::before {
+  /* upward triangle */
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-bottom: 8px solid var(--priority-high);
+}
+.priority--high {
+  border-color: var(--priority-high);
+  color: #7f1d1d;
+  background: #fff1f2;
+}
+
+.priority--medium::before {
+  /* filled square */
+  width: 8px;
+  height: 8px;
+  background: var(--priority-medium);
+  border-radius: 1px;
+}
+.priority--medium {
+  border-color: var(--priority-medium);
+  color: #7c2d12;
+  background: #fffbeb;
+}
+
+.priority--low::before {
+  /* downward triangle */
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 8px solid var(--priority-low);
+}
+.priority--low {
+  border-color: var(--priority-low);
+  color: #064e3b;
+  background: #ecfdf5;
+}
+
+.priority--unknown::before {
+  /* small circle */
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--priority-unknown);
+}
+.priority--unknown {
+  border-color: var(--color-border-strong);
+  color: var(--color-text-muted);
+  background: var(--color-surface-muted);
+}
+
+/* Priority stripe color on the card ::before, driven by the child priority modifier */
+.project-card:has(.priority--high)::before   { background: var(--priority-high); }
+.project-card:has(.priority--medium)::before { background: var(--priority-medium); }
+.project-card:has(.priority--low)::before    { background: var(--priority-low); }
+.project-card:has(.priority--unknown)::before{ background: var(--priority-unknown); }
+
+/* ---------- Edge states ---------- */
+
+.empty-state,
+.error-state {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  text-align: center;
+  padding: var(--space-7) var(--space-5);
+  background: var(--color-surface);
+  border: 1px dashed var(--color-border-strong);
+  border-radius: var(--radius-lg);
+  color: var(--color-text-muted);
+  box-shadow: var(--shadow-sm);
+}
+
+.empty-state::before {
+  content: "📭";
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.error-state {
+  background: #fff5f5;
+  border-color: #fecaca;
+  color: #7f1d1d;
+}
+
+.error-state::before {
+  content: "⚠️";
+  font-size: 2rem;
+  line-height: 1;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 640px) {
+  .dashboard {
+    padding: var(--space-4) var(--space-3) var(--space-6);
+  }
+  .dashboard__header {
+    padding: var(--space-4);
+    border-radius: var(--radius-md);
+  }
+  .dashboard__header h1,
+  .dashboard__header .dashboard__title {
+    font-size: 1.375rem;
+  }
+  .project-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+  .project-card {
+    padding: var(--space-4);
+    padding-left: calc(var(--space-4) + 6px);
+  }
+}
+
+@media (max-width: 360px) {
+  .dashboard {
+    padding: var(--space-3) var(--space-2) var(--space-5);
+  }
+}
+
+/* ---------- Motion preferences ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+  .project-card:hover {
+    transform: none;
+  }
+}

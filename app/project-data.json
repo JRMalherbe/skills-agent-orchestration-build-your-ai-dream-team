@@ -1,0 +1,39 @@
+{
+  "projects": [
+    {
+      "name": "Launch Readiness Tracker",
+      "owner": "Mona",
+      "status": "active",
+      "recentActivity": "Updated rollout checklist and confirmed final stakeholder review.",
+      "priority": "high"
+    },
+    {
+      "name": "Contributor Onboarding Flow",
+      "owner": "Raj",
+      "status": "at-risk",
+      "recentActivity": "Waiting on accessibility review for the welcome tour prototype.",
+      "priority": "high"
+    },
+    {
+      "name": "Insights Export Pipeline",
+      "owner": "Avery",
+      "status": "blocked",
+      "recentActivity": "Blocked by missing API credentials for the staging environment.",
+      "priority": "medium"
+    },
+    {
+      "name": "Design Token Cleanup",
+      "owner": "Sam",
+      "status": "shipped",
+      "recentActivity": "Merged documentation updates and published the token migration notes.",
+      "priority": "low"
+    },
+    {
+      "name": "Mobile Dashboard Spike",
+      "owner": "Taylor",
+      "status": "on-hold",
+      "recentActivity": "Paused until analytics requirements are finalized next sprint.",
+      "priority": "medium"
+    }
+  ]
+}

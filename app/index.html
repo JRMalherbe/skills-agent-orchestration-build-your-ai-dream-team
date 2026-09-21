@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Project Pulse</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main>
+      <section class="dashboard" aria-labelledby="dashboard-title">
+        <header class="dashboard__header">
+          <p>Team dashboard</p>
+          <h1 id="dashboard-title">Project Pulse</h1>
+          <p>Track project status, ownership, recent activity, and priority at a glance.</p>
+        </header>
+
+        <div class="empty-state" hidden>
+          No projects are available yet. Add projects to the data file to populate this dashboard.
+        </div>
+
+        <div class="error-state" hidden>
+          We could not load the project dashboard. Please check the project data file and try again.
+        </div>
+
+        <section class="project-grid" aria-label="Project cards" aria-live="polite"></section>
+      </section>
+    </main>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        loadProjects();
+      });
+
+      async function loadProjects() {
+        const projectGrid = document.querySelector('.project-grid');
+        const emptyState = document.querySelector('.empty-state');
+        const errorState = document.querySelector('.error-state');
+
+        try {
+          const response = await fetch('./project-data.json');
+
+          if (!response.ok) {
+            throw new Error(`Project data request failed with status ${response.status}`);
+          }
+
+          const data = await response.json();
+
+          if (!data || typeof data !== 'object' || Array.isArray(data)) {
+            throw new Error('Project data root must be an object.');
+          }
+
+          if (!Array.isArray(data.projects)) {
+            throw new Error('Project data must include a projects array.');
+          }
+
+          projectGrid.textContent = '';
+          emptyState.hidden = true;
+          errorState.hidden = true;
+
+          if (data.projects.length === 0) {
+            emptyState.hidden = false;
+            return;
+          }
+
+          const projectCards = document.createDocumentFragment();
+
+          data.projects.forEach((project) => {
+            projectCards.appendChild(createProjectCard(project));
+          });
+
+          projectGrid.appendChild(projectCards);
+        } catch (error) {
+          projectGrid.textContent = '';
+          emptyState.hidden = true;
+          errorState.hidden = false;
+          console.error('Unable to load Project Pulse data:', error);
+        }
+      }
+
+      function createProjectCard(project) {
+        const safeProject = project && typeof project === 'object' ? project : {};
+        const card = document.createElement('article');
+        card.className = 'project-card';
+
+        const title = document.createElement('h2');
+        title.className = 'project-card__title';
+        title.textContent = getTextValue(safeProject.name, 'Untitled project');
+
+        const owner = document.createElement('p');
+        owner.className = 'project-card__owner';
+        owner.textContent = `Owner: ${getTextValue(safeProject.owner, 'Unknown owner')}`;
+
+        const activity = document.createElement('p');
+        activity.className = 'project-card__activity';
+        activity.textContent = `Recent activity: ${getTextValue(safeProject.recentActivity, 'No recent activity')}`;
+
+        const status = document.createElement('span');
+        const statusSlug = getAllowedSlug(
+          safeProject.status,
+          ['active', 'at-risk', 'blocked', 'shipped', 'on-hold']
+        );
+        status.className = `status-badge status-badge--${statusSlug}`;
+        status.textContent = getTextValue(safeProject.status, 'unknown');
+
+        const priority = document.createElement('span');
+        const prioritySlug = getAllowedSlug(safeProject.priority, ['high', 'medium', 'low']);
+        priority.className = `priority priority--${prioritySlug}`;
+        priority.textContent = `Priority: ${getTextValue(safeProject.priority, 'unknown')}`;
+
+        card.append(title, owner, activity, status, priority);
+
+        return card;
+      }
+
+      function getTextValue(value, fallback) {
+        if (typeof value !== 'string') {
+          return fallback;
+        }
+
+        const trimmedValue = value.trim();
+        return trimmedValue ? trimmedValue : fallback;
+      }
+
+      function getAllowedSlug(value, allowedValues) {
+        if (typeof value !== 'string') {
+          return 'unknown';
+        }
+
+        return allowedValues.includes(value) ? value : 'unknown';
+      }
+    </script>
+  </body>
+</html>
